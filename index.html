@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MATH QUIZ — Interactive Math Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: #0d0d0e;
+      --card-bg: #151518;
+      --card-border: #26262c;
+      --pink-primary: #ff2a85;
+      --pink-glow: rgba(255, 42, 133, 0.35);
+      --pink-dark: #cc1163;
+      --text-main: #f3f3f6;
+      --text-muted: #a0a0ab;
+      --easy-color: #10b981;
+      --medium-color: #f59e0b;
+      --hard-color: #ff2a85;
+      --font-family: 'Montserrat', -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 42, 133, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 42, 133, 0.05) 0%, transparent 50%);
+    }
+
+    .container { width: 100%; max-width: 720px; margin: 0 auto; }
+
+    /* HEADER */
+    .header { text-align: center; margin-bottom: 24px; }
+    .badge-capsule {
+      display: inline-block;
+      border: 1.5px solid var(--pink-primary);
+      color: var(--pink-primary);
+      padding: 6px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      background: rgba(255, 42, 133, 0.05);
+    }
+    .main-title {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--pink-primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 20px var(--pink-glow);
+      margin-bottom: 8px;
+    }
+    .subtitle { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* GENERATOR */
+    .ai-generator-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    .topic-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .tag-btn {
+      background: #1f1f24;
+      border: 1px solid #33333d;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .tag-btn:hover { border-color: var(--pink-primary); color: var(--text-main); }
+    .tag-btn.active-topic {
+      border-color: var(--pink-primary);
+      color: var(--pink-primary);
+      background: rgba(255, 42, 133, 0.1);
+    }
+    .generate-row { display: flex; gap: 10px; margin-top: 12px; }
+    .input-field {
+      flex: 1;
+      background: #09090a;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .input-field:focus { outline: none; border-color: var(--pink-primary); }
+    .btn-pink {
+      background: var(--pink-primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+    .btn-pink:hover { background: var(--pink-dark); box-shadow: 0 0 15px var(--pink-glow); }
+    .btn-pink:disabled { opacity: 0.6; cursor: wait; }
+
+    /* FILTER */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .filter-title { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .filter-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .filter-btn.active { background: var(--pink-primary); color: #fff; }
+
+    /* PROGRESS */
+    .progress-container { margin-bottom: 16px; }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .progress-bar-bg { height: 8px; background: #222228; border-radius: 10px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--pink-primary); width: 10%; transition: width 0.3s ease; }
+
+    /* CARD */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .diff-badge {
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .diff-easy { background: rgba(16, 185, 129, 0.15); color: var(--easy-color); border: 1px solid var(--easy-color); }
+    .diff-medium { background: rgba(245, 158, 11, 0.15); color: var(--medium-color); border: 1px solid var(--medium-color); }
+    .diff-hard { background: rgba(255, 42, 133, 0.15); color: var(--hard-color); border: 1px solid var(--hard-color); }
+
+    .question-title { font-size: 1.25rem; font-weight: 800; line-height: 1.4; margin-bottom: 20px; }
+
+    /* OPTIONS */
+    .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .option-btn {
+      background: #0d0d0f;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .option-btn:hover:not(:disabled) { border-color: var(--pink-primary); background: rgba(255, 42, 133, 0.05); }
+    .option-btn:disabled { cursor: default; }
+    .opt-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--pink-primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .option-btn.selected-correct { border-color: var(--easy-color); background: rgba(16, 185, 129, 0.15); }
+    .option-btn.selected-correct .opt-number { background: var(--easy-color); }
+    .option-btn.selected-wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.15); }
+    .option-btn.selected-wrong .opt-number { background: #ef4444; }
+
+    /* HINT & SOLUTION */
+    .hint-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--pink-primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+    .hint-box, .solution-box {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .hint-box { background: #1c1c22; border-left: 3px solid var(--pink-primary); color: #d1d1d6; }
+    .solution-box { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
+    .solution-box.correct { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: #6ee7b7; }
+
+    .footer-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+    .hidden { display: none !important; }
+
+    /* RESULTS */
+    .results-card { text-align: center; padding: 36px 20px; }
+    .score-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 4px solid var(--pink-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--pink-primary);
+      box-shadow: 0 0 25px var(--pink-glow);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <div class="badge-capsule">Interactive Math Quiz</div>
+      <h1 class="main-title">MATH QUIZ</h1>
+      <p class="subtitle">Practice multi-level math challenges — hints and full solutions included</p>
+    </header>
+
+    <div class="ai-generator-card">
+      <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+        ⚡ Quiz Generator
+      </div>
+      <div class="generate-row">
+        <input type="text" id="topicInput" class="input-field" placeholder="Enter topic (e.g. Geometry, Algebra, Logic)..." />
+        <button class="btn-pink" id="generateBtn">Generate</button>
+      </div>
+      <div class="topic-tags">
+        <button class="tag-btn" data-topic="General Math">General Math</button>
+        <button class="tag-btn" data-topic="Algebra & Equations">Algebra</button>
+        <button class="tag-btn" data-topic="Geometry & Area">Geometry</button>
+        <button class="tag-btn" data-topic="Speed & Logic">Speed & Logic</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-title">Filter Difficulty:</div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-level="ALL">ALL</button>
+        <button class="filter-btn" data-level="EASY">EASY</button>
+        <button class="filter-btn" data-level="MEDIUM">MEDIUM</button>
+        <button class="filter-btn" data-level="HARD">HARD</button>
+      </div>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-header">
+        <span id="progressText">Question 1 of 10</span>
+        <span id="scoreText">Score: 0</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <main class="card" id="quizCard">
+      <div class="card-top">
+        <span class="diff-badge diff-easy" id="diffBadge">EASY</span>
+        <span style="font-size:0.8rem; color:var(--text-muted);" id="qIndexText">QUESTION 01 / 10</span>
+      </div>
+      <h2 class="question-title" id="questionText">Loading question...</h2>
+      <div class="options-grid" id="optionsGrid"></div>
+      <button class="hint-toggle-btn" id="hintBtn">💡 Need a hint?</button>
+      <div class="hint-box hidden" id="hintBox"></div>
+      <div class="solution-box hidden" id="solutionBox"></div>
+      <div class="footer-actions">
+        <button class="btn-pink hidden" id="nextBtn">Next Question ➔</button>
+      </div>
+    </main>
+
+    <div class="card results-card hidden" id="resultsCard">
+      <div class="badge-capsule">Quiz Completed</div>
+      <div class="score-circle" id="finalScoreCircle">8/10</div>
+      <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 10px;">Great Job!</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;" id="finalScoreMessage">You have successfully mastered this math module.</p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn-pink" id="restartBtn">Restart Quiz</button>
+        <button class="tag-btn" id="newQuizBtn" style="padding: 10px 20px; font-weight:700;">New Quiz</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ============================================================
+   QUESTION BANKS — 4 topics × 10 questions
+   ============================================================ */
+const TOPIC_BANKS = {
+  "General Math": [
+    { question: "What is the result of 15 + 4 × 3?", options: ["57", "27", "19", "21"], correct: 1, difficulty: "EASY", hint: "Remember the order of operations (PEMDAS): multiplication before addition.", solution: "Multiply 4 × 3 = 12 first, then add 15: 15 + 12 = 27." },
+    { question: "Find the area of a rectangle with sides of 6 cm and 8 cm.", options: ["28 cm²", "48 cm²", "14 cm²", "24 cm²"], correct: 1, difficulty: "EASY", hint: "Area = Length × Width.", solution: "6 cm × 8 cm = 48 cm²." },
+    { question: "Which of the following numbers is prime?", options: ["9", "15", "13", "21"], correct: 2, difficulty: "EASY", hint: "A prime number is only divisible by 1 and itself.", solution: "13 has no positive divisors other than 1 and 13. The others are composite." },
+    { question: "Solve for x: 3x − 5 = 16", options: ["x = 7", "x = 5", "x = 3.7", "x = 7.5"], correct: 0, difficulty: "MEDIUM", hint: "Add 5 to both sides, then divide by 3.", solution: "1) 3x = 16 + 5 = 21. 2) x = 21 / 3 = 7." },
+    { question: "What is 20% of 150?", options: ["25", "30", "35", "50"], correct: 1, difficulty: "MEDIUM", hint: "Multiply 150 by 0.20 or calculate 150 / 5.", solution: "150 × 0.20 = 30." },
+    { question: "Find the positive solution to x² = 81.", options: ["7", "8", "9", "18"], correct: 2, difficulty: "MEDIUM", hint: "What positive number multiplied by itself equals 81?", solution: "Since 9 × 9 = 81, x = 9." },
+    { question: "What is the sum of the interior angles of any triangle?", options: ["90°", "180°", "270°", "360°"], correct: 1, difficulty: "MEDIUM", hint: "This is a basic rule in Euclidean geometry.", solution: "The interior angles of a triangle always sum to 180°." },
+    { question: "Evaluate the expression: (2⁵ × 2³) / 2⁴", options: ["4", "8", "16", "32"], correct: 2, difficulty: "HARD", hint: "Use exponent rules: 2ᵃ × 2ᵇ = 2ᵃ⁺ᵇ and 2ᵃ / 2ᵇ = 2ᵃ⁻ᵇ.", solution: "1) Numerator: 2⁵⁺³ = 2⁸. 2) Division: 2⁸⁻⁴ = 2⁴ = 16." },
+    { question: "The perimeter of a square is 36 cm. What is its area?", options: ["36 cm²", "81 cm²", "64 cm²", "18 cm²"], correct: 1, difficulty: "HARD", hint: "First find side length (Perimeter / 4), then square it.", solution: "1) Side = 36 / 4 = 9 cm. 2) Area = 9² = 81 cm²." },
+    { question: "A car travels 120 km in 1 hour and 30 minutes. What is its average speed?", options: ["70 km/h", "75 km/h", "80 km/h", "90 km/h"], correct: 2, difficulty: "HARD", hint: "Convert 1 hour 30 min into decimal hours (1.5 h), then Speed = Distance / Time.", solution: "Speed = 120 km / 1.5 h = 80 km/h." }
+  ],
+  "Algebra & Equations": [
+    { question: "Solve for x: x + 7 = 12", options: ["x = 3", "x = 5", "x = 7", "x = 19"], correct: 1, difficulty: "EASY", hint: "Subtract 7 from both sides.", solution: "x = 12 − 7 = 5." },
+    { question: "Simplify: 2(x + 3)", options: ["2x + 3", "2x + 6", "x + 6", "2x + 5"], correct: 1, difficulty: "EASY", hint: "Multiply each term inside the brackets by 2.", solution: "2·x + 2·3 = 2x + 6." },
+    { question: "If y = 3x and x = 4, what is y?", options: ["7", "12", "34", "1"], correct: 1, difficulty: "EASY", hint: "Substitute x = 4 into the equation.", solution: "y = 3 × 4 = 12." },
+    { question: "Solve for x: 5x − 3 = 22", options: ["x = 4", "x = 5", "x = 6", "x = 7"], correct: 1, difficulty: "MEDIUM", hint: "Add 3 to both sides, then divide by 5.", solution: "1) 5x = 25. 2) x = 25 / 5 = 5." },
+    { question: "Factor: x² − 9", options: ["(x − 3)(x + 3)", "(x − 9)(x + 1)", "(x − 3)²", "(x + 3)²"], correct: 0, difficulty: "MEDIUM", hint: "This is a difference of squares: a² − b² = (a − b)(a + b).", solution: "x² − 3² = (x − 3)(x + 3)." },
+    { question: "Solve: 2x + 3 = x + 10", options: ["x = 5", "x = 7", "x = 13", "x = 3"], correct: 1, difficulty: "MEDIUM", hint: "Move all x-terms to one side and constants to the other.", solution: "2x − x = 10 − 3 → x = 7." },
+    { question: "What is the slope of the line y = −2x + 5?", options: ["5", "2", "−2", "−5"], correct: 2, difficulty: "MEDIUM", hint: "In y = mx + b, m is the slope.", solution: "The coefficient of x is −2, so slope = −2." },
+    { question: "Solve the system: x + y = 7; x − y = 1. Find x.", options: ["x = 3", "x = 4", "x = 5", "x = 6"], correct: 1, difficulty: "HARD", hint: "Add the two equations to eliminate y.", solution: "(x+y)+(x−y) = 7+1 → 2x = 8 → x = 4." },
+    { question: "Solve for x: x² − 5x + 6 = 0", options: ["x = 1 or 6", "x = 2 or 3", "x = −2 or −3", "x = 5 or 6"], correct: 1, difficulty: "HARD", hint: "Find two numbers that multiply to 6 and add to −5.", solution: "x² − 5x + 6 = (x − 2)(x − 3) → x = 2 or x = 3." },
+    { question: "If f(x) = 2x² − 3, what is f(4)?", options: ["13", "29", "32", "5"], correct: 1, difficulty: "HARD", hint: "Substitute x = 4 and follow order of operations.", solution: "f(4) = 2·16 − 3 = 32 − 3 = 29." }
+  ],
+  "Geometry & Area": [
+    { question: "How many sides does a pentagon have?", options: ["4", "5", "6", "7"], correct: 1, difficulty: "EASY", hint: "'Penta' means five in Greek.", solution: "A pentagon has 5 sides." },
+    { question: "What is the area of a square with side 5 cm?", options: ["10 cm²", "20 cm²", "25 cm²", "5 cm²"], correct: 2, difficulty: "EASY", hint: "Area of a square = side × side.", solution: "5 × 5 = 25 cm²." },
+    { question: "What is the circumference formula of a circle?", options: ["πr²", "2πr", "πd²", "r²"], correct: 1, difficulty: "EASY", hint: "Circumference is the distance around the circle.", solution: "C = 2πr (or πd)." },
+    { question: "A triangle has base 10 cm and height 6 cm. Find its area.", options: ["60 cm²", "30 cm²", "16 cm²", "36 cm²"], correct: 1, difficulty: "MEDIUM", hint: "Area of triangle = ½ × base × height.", solution: "½ × 10 × 6 = 30 cm²." },
+    { question: "What is the sum of interior angles of a hexagon?", options: ["540°", "720°", "900°", "360°"], correct: 1, difficulty: "MEDIUM", hint: "Formula: (n − 2) × 180°.", solution: "(6 − 2) × 180° = 4 × 180° = 720°." },
+    { question: "Find the volume of a cube with side 3 cm.", options: ["9 cm³", "18 cm³", "27 cm³", "36 cm³"], correct: 2, difficulty: "MEDIUM", hint: "Volume of cube = side³.", solution: "3³ = 27 cm³." },
+    { question: "The radius of a circle is 7 cm. What is its area? (Use π ≈ 22/7)", options: ["44 cm²", "154 cm²", "49 cm²", "22 cm²"], correct: 1, difficulty: "MEDIUM", hint: "Area of circle = πr².", solution: "(22/7) × 7² = 22 × 7 = 154 cm²." },
+    { question: "A right triangle has legs 6 and 8. Find the hypotenuse.", options: ["10", "12", "14", "48"], correct: 0, difficulty: "HARD", hint: "Use the Pythagorean theorem: c² = a² + b².", solution: "c² = 36 + 64 = 100 → c = 10." },
+    { question: "Find the surface area of a cube with side 4 cm.", options: ["16 cm²", "64 cm²", "96 cm²", "24 cm²"], correct: 2, difficulty: "HARD", hint: "A cube has 6 identical square faces.", solution: "6 × 4² = 6 × 16 = 96 cm²." },
+    { question: "Two angles of a triangle are 45° and 65°. Find the third angle.", options: ["60°", "70°", "80°", "90°"], correct: 1, difficulty: "HARD", hint: "Angles of a triangle sum to 180°.", solution: "180 − 45 − 65 = 70°." }
+  ],
+  "Speed & Logic": [
+    { question: "What is the next number: 2, 4, 6, 8, ...?", options: ["9", "10", "11", "12"], correct: 1, difficulty: "EASY", hint: "Add 2 each time.", solution: "The sequence increases by 2, so next is 10." },
+    { question: "A car travels 60 km in 1 hour. What is its speed?", options: ["30 km/h", "60 km/h", "90 km/h", "120 km/h"], correct: 1, difficulty: "EASY", hint: "Speed = Distance / Time.", solution: "60 / 1 = 60 km/h." },
+    { question: "If 3 pens cost $6, how much do 5 pens cost?", options: ["$8", "$10", "$12", "$15"], correct: 1, difficulty: "EASY", hint: "Find the price of one pen first.", solution: "1 pen = $2 → 5 pens = $10." },
+    { question: "A train travels 180 km in 2 hours. What is its speed?", options: ["80 km/h", "90 km/h", "100 km/h", "120 km/h"], correct: 1, difficulty: "MEDIUM", hint: "Speed = Distance / Time.", solution: "180 / 2 = 90 km/h." },
+    { question: "What is the next number: 1, 1, 2, 3, 5, 8, ...?", options: ["10", "11", "13", "15"], correct: 2, difficulty: "MEDIUM", hint: "Each number is the sum of the two before it.", solution: "5 + 8 = 13 (Fibonacci sequence)." },
+    { question: "A worker completes a job in 4 hours. At the same rate, how long for 3 workers?", options: ["12 h", "8 h", "4 h", "1.33 h"], correct: 3, difficulty: "MEDIUM", hint: "More workers → less time, inversely proportional.", solution: "4 / 3 ≈ 1.33 hours." },
+    { question: "A car travels 120 km in 1.5 hours. What is its speed?", options: ["70 km/h", "75 km/h", "80 km/h", "90 km/h"], correct: 2, difficulty: "HARD", hint: "Speed = Distance / Time.", solution: "120 / 1.5 = 80 km/h." },
+    { question: "If 5 machines make 5 widgets in 5 minutes, how long for 100 machines to make 100 widgets?", options: ["5 min", "20 min", "100 min", "500 min"], correct: 0, difficulty: "HARD", hint: "Each machine makes 1 widget in 5 minutes.", solution: "Each machine makes 1 widget in 5 min → 100 machines make 100 widgets in 5 min." },
+    { question: "A shop offers 20% off. If the original price is $50, what is the final price?", options: ["$30", "$35", "$40", "$45"], correct: 2, difficulty: "HARD", hint: "Discount = 20% of $50; subtract from original.", solution: "Discount = $10 → $50 − $10 = $40." },
+    { question: "Two trains move toward each other from 300 km apart at 50 and 70 km/h. When do they meet?", options: ["2 h", "2.5 h", "3 h", "3.5 h"], correct: 1, difficulty: "HARD", hint: "Relative speed = 50 + 70 = 120 km/h.", solution: "Time = 300 / 120 = 2.5 hours." }
+  ]
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentTopic = "General Math";
+let currentLevel = "ALL";
+let currentQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let selectedAnswer = null;
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function initQuiz() {
+  currentIndex = 0;
+  score = 0;
+  selectedAnswer = null;
+
+  const bank = TOPIC_BANKS[currentTopic] || TOPIC_BANKS["General Math"];
+  currentQuestions = currentLevel === "ALL" ? [...bank] : bank.filter(q => q.difficulty === currentLevel);
+
+  // Highlight active topic
+  document.querySelectorAll(".tag-btn[data-topic]").forEach(b => {
+    b.classList.toggle("active-topic", b.dataset.topic === currentTopic);
+  });
+
+  // Edge case
+  if (currentQuestions.length === 0) {
+    document.getElementById("quizCard").classList.add("hidden");
+    document.getElementById("resultsCard").classList.remove("hidden");
+    document.getElementById("finalScoreCircle").innerText = "—";
+    document.getElementById("finalScoreMessage").innerText = "No questions available for this difficulty. Try another filter.";
+    return;
+  }
+
+  document.getElementById("resultsCard").classList.add("hidden");
+  document.getElementById("quizCard").classList.remove("hidden");
+  renderQuestion();
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderQuestion() {
+  const q = currentQuestions[currentIndex];
+  selectedAnswer = null;
+  const total = currentQuestions.length;
+
+  document.getElementById("progressText").innerText = `Question ${currentIndex + 1} of ${total}`;
+  document.getElementById("scoreText").innerText = `Score: ${score}`;
+  document.getElementById("progressFill").style.width = `${((currentIndex + 1) / total) * 100}%`;
+  document.getElementById("qIndexText").innerText = `QUESTION ${String(currentIndex + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+
+  const diffBadge = document.getElementById("diffBadge");
+  diffBadge.innerText = q.difficulty;
+  diffBadge.className = `diff-badge diff-${q.difficulty.toLowerCase()}`;
+
+  document.getElementById("questionText").innerText = q.question;
+
+  const optionsGrid = document.getElementById("optionsGrid");
+  optionsGrid.innerHTML = "";
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.onclick = () => selectOption(idx);
+    btn.innerHTML = `<span class="opt-number">${idx + 1}</span><span>${opt}</span>`;
+    optionsGrid.appendChild(btn);
+  });
+
+  // Reset hint & solution
+  document.getElementById("hintBox").classList.add("hidden");
+  document.getElementById("hintBox").innerText = q.hint;
+  document.getElementById("hintBtn").style.display = "inline-flex";
+  document.getElementById("solutionBox").classList.add("hidden");
+  document.getElementById("nextBtn").classList.add("hidden");
+}
+
+/* ============================================================
+   INTERACTIONS
+   ============================================================ */
+function selectOption(index) {
+  if (
