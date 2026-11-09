@@ -39,7 +39,7 @@
         radial-gradient(circle at 90% 80%, rgba(255, 42, 133, 0.05) 0%, transparent 50%);
     }
 
-    .container { width: 100%; max-width: 800px; margin: 0 auto; }
+    .container { width: 100%; max-width: 850px; margin: 0 auto; }
 
     /* NAVIGATION / TABS */
     .nav-tabs {
@@ -136,7 +136,7 @@
     }
     .tag-btn:hover { border-color: var(--pink-primary); color: var(--text-main); }
     .generate-row { display: flex; gap: 10px; margin-top: 12px; }
-    .input-field, textarea.input-field {
+    .input-field {
       width: 100%;
       background: #09090a;
       border: 1px solid var(--card-border);
@@ -266,17 +266,51 @@
     }
     .ak-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 
-    /* FEEDBACK COMPARISON BOXES */
-    .feedback-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+    /* FIXED STUDENT FEEDBACK CARDS */
+    .student-card {
+      background: #09090a;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    .student-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1a1a20;
+    }
+    .student-name { font-weight: 800; font-size: 1rem; color: #fff; }
+    .student-ans-badge {
+      background: #1c1c24;
+      border: 1px solid #2e2e38;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--pink-primary);
+    }
+
+    .feedback-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
     @media (max-width: 650px) { .feedback-box-grid { grid-template-columns: 1fr; } }
     .feedback-column {
-      background: #0d0d0f;
-      border-radius: 12px;
-      padding: 16px;
+      background: #121215;
+      border-radius: 10px;
+      padding: 14px;
       border: 1px solid var(--card-border);
     }
     .feedback-column.teacher { border-color: var(--easy-color); background: rgba(16, 185, 129, 0.04); }
-    .feedback-header { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; }
+    .feedback-header { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+
+    .teacher-notes-box {
+      background: #191920;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
 
     /* PROMPTS & REFLECTION BOXES */
     .prompt-block {
@@ -310,14 +344,14 @@
   <div class="container">
     <header class="header">
       <div class="badge-capsule">AI-Supported Assessment Platform</div>
-      <h1 class="main-title">MATH QUIZ & FEEDBACK HUB</h1>
+      <h1 class="main-title">TRIGONOMETRY QUIZ & FEEDBACK HUB</h1>
       <p class="subtitle">Exploring AI for Assessment, Differentiated Feedback & Pedagogical Audit</p>
     </header>
 
     <!-- TAB NAVIGATION -->
     <nav class="nav-tabs">
       <button class="tab-btn active" onclick="switchSection('quizSection', this)">Section 1: Quiz & Generator</button>
-      <button class="tab-btn" onclick="switchSection('feedbackSection', this)">Section 2: AI Feedback</button>
+      <button class="tab-btn" onclick="switchSection('feedbackSection', this)">Section 2: AI Feedback (4 Students)</button>
       <button class="tab-btn" onclick="switchSection('promptsSection', this)">Prompts Used</button>
       <button class="tab-btn" onclick="switchSection('reflectionSection', this)">Reflection</button>
     </nav>
@@ -329,14 +363,13 @@
           ⚡ AI Quiz Generator
         </div>
         <div class="generate-row">
-          <input type="text" id="topicInput" class="input-field" placeholder="e.g. Difference of Squares, Algebra, Geometry..." value="Difference of Squares" />
+          <input type="text" id="topicInput" class="input-field" placeholder="e.g. Trigonometric Identities, Unit Circle..." value="Trigonometric Identities" />
           <button class="btn-pink" id="generateBtn">Generate</button>
         </div>
         <div class="topic-tags">
-          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Difference of Squares'; generateQuizWithAI();">Difference of Squares</button>
-          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Algebra'; generateQuizWithAI();">Algebra</button>
-          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Geometry'; generateQuizWithAI();">Geometry</button>
-          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Probability'; generateQuizWithAI();">Probability</button>
+          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Trigonometric Identities'; generateQuizWithAI();">Trigonometric Identities</button>
+          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Unit Circle & Angles'; generateQuizWithAI();">Unit Circle & Angles</button>
+          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Sine and Cosine Rules'; generateQuizWithAI();">Sine & Cosine Rules</button>
         </div>
       </div>
 
@@ -355,7 +388,7 @@
           <span class="diff-badge diff-easy" id="diffBadge">EASY</span>
           <span style="font-size:0.8rem; color:var(--text-muted);" id="qIndexText">QUESTION 01 / 10</span>
         </div>
-        <h2 class="question-title" id="questionText">Click Generate to start the AI Quiz!</h2>
+        <h2 class="question-title" id="questionText">Click Generate to start the AI Trigonometry Quiz!</h2>
         <div class="options-grid" id="optionsGrid"></div>
         <button class="hint-toggle-btn hidden" id="hintBtn">💡 Need a hint?</button>
         <div class="hint-box hidden" id="hintBox"></div>
@@ -371,54 +404,114 @@
         <div class="badge-capsule">Quiz Completed</div>
         <div style="font-size: 2.5rem; font-weight: 900; color: var(--pink-primary); margin: 16px 0;" id="finalScoreCircle">0/10</div>
         <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 10px;">Great Job!</h2>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">You have completed this AI-generated assessment.</p>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">You have completed this AI-generated trigonometry assessment.</p>
         <button class="btn-pink" id="restartBtn">Generate New Quiz</button>
       </div>
 
       <!-- FULL ANSWER KEY DISPLAY -->
       <div class="card hidden" id="answerKeyCard">
-        <div class="section-title">🗝️ Complete Answer Key (All Questions)</div>
+        <div class="section-title">🗝️ Complete Answer Key (All 10 Questions)</div>
         <div id="answerKeyList"></div>
       </div>
     </div>
 
-    <!-- SECTION 2: AI-SUPPORTED FEEDBACK MODIFIER -->
+    <!-- SECTION 2: FIXED 4-STUDENT AI-SUPPORTED FEEDBACK AUDIT -->
     <div id="feedbackSection" class="hidden">
       <div class="card">
         <div class="section-title">🔍 Section 2: AI-Supported Feedback Audit</div>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
-          Tested Question: <strong>Simplify expression: $(2a - 5)(2a + 5)$</strong> (Correct answer: $4a^2 - 25$)
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;">
+          <strong>Target Question:</strong> <em>"Simplify the expression: sin²(x) + cos²(x) + tan²(x)"</em><br />
+          <span style="color: var(--easy-color);"><strong>Correct Answer:</strong> 1 + tan²(x) = sec²(x) (using Pythagorean Identity sin²(x) + cos²(x) = 1)</span>
         </p>
 
-        <div style="margin-bottom: 16px;">
-          <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">SELECT SAMPLE STUDENT ANSWER OR TYPE CUSTOM:</label>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 12px;">
-            <button class="tag-btn" onclick="setStudentAnswer('4a^2 - 25', 'Strong')">Strong Student: "4a² - 25"</button>
-            <button class="tag-btn" onclick="setStudentAnswer('2a^2 - 25', 'Average')">Average Student: "2a² - 25"</button>
-            <button class="tag-btn" onclick="setStudentAnswer('4a^2 - 10a - 25', 'Weak')">Weak Student: "4a² - 10a - 25"</button>
+        <!-- STUDENT 1: STRONG -->
+        <div class="student-card">
+          <div class="student-header">
+            <span class="student-name">🟢 Student 1 (Strong Mastery)</span>
+            <span class="student-ans-badge">Answer: "sec²(x)"</span>
           </div>
-          <input type="text" id="studentAnswerInput" class="input-field" placeholder="Enter student response..." value="2a^2 - 25" />
-        </div>
-
-        <button class="btn-pink" id="genFeedbackBtn" onclick="generateFeedbackAudit()">Generate & Compare AI Feedback</button>
-
-        <!-- COMPARISON AUDIT DISPLAY -->
-        <div id="feedbackAuditResult" class="hidden" style="margin-top: 20px;">
           <div class="feedback-box-grid">
             <div class="feedback-column">
               <div class="feedback-header" style="color: #ef4444;">🤖 Raw AI Feedback</div>
-              <div id="rawAiFeedback" style="font-size: 0.9rem; line-height: 1.5;"></div>
+              <div style="font-size: 0.88rem; line-height: 1.5;">"Correct answer! You substituted sin²(x) + cos²(x) = 1 and used 1 + tan²(x) = sec²(x)."</div>
             </div>
             <div class="feedback-column teacher">
               <div class="feedback-header" style="color: var(--easy-color);">👩‍🏫 Teacher Corrected Feedback</div>
-              <div id="correctedFeedback" style="font-size: 0.9rem; line-height: 1.5;"></div>
+              <div style="font-size: 0.88rem; line-height: 1.5;">"Outstanding work! You seamlessly combined two fundamental Pythagorean identities: first replacing sin²(x) + cos²(x) with 1, and then recognizing that 1 + tan²(x) = sec²(x). Excellent trigonometric fluency!"</div>
             </div>
           </div>
-          <div style="background: #191920; border-radius: 10px; padding: 14px; margin-top: 14px; font-size: 0.85rem;">
-            <strong style="color: var(--pink-primary);">📝 What was corrected & Why:</strong>
-            <p id="teacherNotes" style="color: var(--text-muted); margin-top: 4px;"></p>
+          <div class="teacher-notes-box">
+            <strong style="color: var(--pink-primary);">📝 Teacher Note & Correction:</strong>
+            <span style="color: var(--text-muted);"> Retained the positive verdict, but expanded the explanation to explicitly name both Pythagorean identities used, reinforcing deep mathematical reasoning.</span>
           </div>
         </div>
+
+        <!-- STUDENT 2: AVERAGE (Partial / Unsimplified) -->
+        <div class="student-card">
+          <div class="student-header">
+            <span class="student-name">🟡 Student 2 (Average / Partial Solution)</span>
+            <span class="student-ans-badge">Answer: "1 + tan²(x)"</span>
+          </div>
+          <div class="feedback-box-grid">
+            <div class="feedback-column">
+              <div class="feedback-header" style="color: #ef4444;">🤖 Raw AI Feedback</div>
+              <div style="font-size: 0.88rem; line-height: 1.5;">"Partially correct. You simplified sin²(x) + cos²(x) to 1, but you didn't finish simplifying 1 + tan²(x)."</div>
+            </div>
+            <div class="feedback-column teacher">
+              <div class="feedback-header" style="color: var(--easy-color);">👩‍🏫 Teacher Corrected Feedback</div>
+              <div style="font-size: 0.88rem; line-height: 1.5;">"Great first step! You correctly recognized that sin²(x) + cos²(x) = 1. To complete the simplification, recall the secondary Pythagorean identity: what does 1 + tan²(x) equal in terms of secant? Give it one more try!"</div>
+            </div>
+          </div>
+          <div class="teacher-notes-box">
+            <strong style="color: var(--pink-primary);">📝 Teacher Note & Correction:</strong>
+            <span style="color: var(--text-muted);"> Softened the robotic tone. Replaced negative phrasing ("you didn't finish") with scaffolding praise and a prompt guiding the student to sec²(x).</span>
+          </div>
+        </div>
+
+        <!-- STUDENT 3: WEAK (Algebraic Misconception) -->
+        <div class="student-card">
+          <div class="student-header">
+            <span class="student-name">🟠 Student 3 (Weak / Algebraic Confusion)</span>
+            <span class="student-ans-badge">Answer: "2 + tan²(x)"</span>
+          </div>
+          <div class="feedback-box-grid">
+            <div class="feedback-column">
+              <div class="feedback-header" style="color: #ef4444;">🤖 Raw AI Feedback</div>
+              <div style="font-size: 0.88rem; line-height: 1.5;">"Incorrect. sin²(x) + cos²(x) equals 1, not 2. Check your identity tables."</div>
+            </div>
+            <div class="feedback-column teacher">
+              <div class="feedback-header" style="color: var(--easy-color);">👩‍🏫 Teacher Corrected Feedback</div>
+              <div style="font-size: 0.88rem; line-height: 1.5;">"I see your logic in adding the terms, but remember the fundamental rule: sin²(x) + cos²(x) ALWAYS equals 1 for any angle (not 1 + 1 = 2). Substituting 1 gives 1 + tan²(x). Let's review the unit circle proof together!"</div>
+            </div>
+          </div>
+          <div class="teacher-notes-box">
+            <strong style="color: var(--pink-primary);">📝 Teacher Note & Correction:</strong>
+            <span style="color: var(--text-muted);"> Replaced blunt failure message with a empathetic diagnostic explaining WHY sin²(x) + cos²(x) = 1 rather than 2, offering follow-up help.</span>
+          </div>
+        </div>
+
+        <!-- STUDENT 4: SEVERE MISCONCEPTION (Linear Addition Error) -->
+        <div class="student-card">
+          <div class="student-header">
+            <span class="student-name">🔴 Student 4 (Severe Misconception)</span>
+            <span class="student-ans-badge">Answer: "(sin(x) + cos(x))² + tan²(x)"</span>
+          </div>
+          <div class="feedback-box-grid">
+            <div class="feedback-column">
+              <div class="feedback-header" style="color: #ef4444;">🤖 Raw AI Feedback</div>
+              <div style="font-size: 0.88rem; line-height: 1.5;">"Wrong. sin²(x) + cos²(x) is not equal to (sin(x) + cos(x))². That is a basic algebra error."</div>
+            </div>
+            <div class="feedback-column teacher">
+              <div class="feedback-header" style="color: var(--easy-color);">👩‍🏫 Teacher Corrected Feedback</div>
+              <div style="font-size: 0.88rem; line-height: 1.5;">"Careful here! Remember that (a + b)² = a² + 2ab + b², so (sin(x) + cos(x))² expands to sin²(x) + 2sin(x)cos(x) + cos²(x), which introduces an extra term. Look closely at sin²(x) + cos²(x) on its own — it simplifies directly to 1!"</div>
+            </div>
+          </div>
+          <div class="teacher-notes-box">
+            <strong style="color: var(--pink-primary);">📝 Teacher Note & Correction:</strong>
+            <span style="color: var(--text-muted);"> Removed critical judgment ("basic algebra error") and provided step-by-step algebraic expansion to show why squaring binomials doesn't work here.</span>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -428,7 +521,7 @@
         <div class="section-title">💬 Prompts Provided to AI</div>
         
         <h4 style="color: var(--pink-primary); margin-bottom: 6px;">1. Quiz Generation Prompt (Section 1)</h4>
-        <div class="prompt-block">You are a secondary mathematics teacher. Create a JSON array of exactly 10 multiple-choice math questions about "Difference of Squares".
+        <div class="prompt-block">You are a secondary mathematics teacher. Create a JSON array of exactly 10 multiple-choice math questions about "Trigonometric Identities".
 Questions must progress in difficulty (Easy, Medium, Hard).
 Each object must contain:
 - "question": string
@@ -439,11 +532,12 @@ Each object must contain:
 - "solution": string</div>
 
         <h4 style="color: var(--pink-primary); margin-bottom: 6px;">2. AI Feedback Generation Prompt (Section 2)</h4>
-        <div class="prompt-block">Analyze sample student responses for the algebra question: "Simplify (2a - 5)(2a + 5)".
-Provide supportive, constructive feedback for three performance tiers:
-1. Strong student (Correct: 4a² - 25)
-2. Average student (Missed squaring coefficient: 2a² - 25)
-3. Weak student (Confused with FOIL / polynomial multiplication: 4a² - 10a - 25)</div>
+        <div class="prompt-block">Analyze sample student responses for the trigonometry question: "Simplify sin²(x) + cos²(x) + tan²(x)".
+Provide constructive feedback for 4 different student answers:
+1. Student 1 (Mastery): "sec²(x)"
+2. Student 2 (Partial): "1 + tan²(x)"
+3. Student 3 (Value error): "2 + tan²(x)"
+4. Student 4 (Binomial confusion): "(sin(x) + cos(x))² + tan²(x)"</div>
       </div>
     </div>
 
@@ -452,11 +546,11 @@ Provide supportive, constructive feedback for three performance tiers:
       <div class="card">
         <div class="section-title">📖 Pedagogical Reflection (100–150 words)</div>
         <div style="line-height: 1.7; font-size: 0.95rem; color: #d1d1d6;">
-          <p>AI significantly accelerated assessment design by instantly generating a structured 10-question math quiz with progressive difficulty tiers and step-by-step hints. It proved highly effective for drafting foundational materials and identifying common algebraic errors (such as forgetting to square coefficients).</p>
+          <p>AI proved exceptionally valuable in generating structured trigonometry quiz questions with incremental difficulty tiers and automated step-by-step solutions. It saved significant prep time by formatting instant answer keys and hints for fundamental identities.</p>
           <br />
-          <p>However, AI-generated feedback was initially overly concise and blunt (e.g., stating "Incorrect" without scaffolding). It lacked pedagogical empathy and actionable next steps. As a teacher, I refined the AI feedback by adding supportive encouragement, clarifying the exact mathematical rule ($(2a)^2 = 4a^2$), and framing mistakes as learning opportunities.</p>
+          <p>However, AI feedback fell short when addressing student misconceptions. It relied on blunt verdicts like "Incorrect" or "Basic algebra error," which risk demotivating learners. The AI missed opportunities to scaffold learning or explain <em>why</em> algebraic rules failed (such as binomial expansion errors).</p>
           <br />
-          <p>Next time, I will engineer prompts with explicit tone constraints (e.g., <em>"Provide empathetic growth-mindset feedback with a guided prompt"</em>) to streamline human editing.</p>
+          <p>As an educator, I corrected the AI output by reframing criticism into supportive prompts, naming specific trigonometric rules, and guiding students step-by-step toward self-correction. Next time, I will include explicit empathetic tone requirements in my AI prompts to improve initial output quality.</p>
         </div>
       </div>
     </div>
@@ -489,7 +583,7 @@ Provide supportive, constructive feedback for three performance tiers:
 
   // AI QUIZ GENERATION
   async function generateQuizWithAI() {
-    const topic = document.getElementById("topicInput").value.trim() || "Difference of Squares";
+    const topic = document.getElementById("topicInput").value.trim() || "Trigonometric Identities";
     
     generateBtn.innerHTML = '<span class="loader"></span> Generating...';
     generateBtn.disabled = true;
@@ -532,7 +626,7 @@ Each object must have exactly these keys:
 
     } catch (error) {
       console.error(error);
-      alert("Generation failed. Loading fallback quiz data.");
+      alert("Generation failed. Loading fallback trigonometry quiz.");
       loadFallbackQuiz();
     } finally {
       generateBtn.innerHTML = "Generate";
@@ -644,44 +738,19 @@ Each object must have exactly these keys:
     });
   }
 
-  // SECTION 2: FEEDBACK AUDIT HANDLER
-  function setStudentAnswer(val, tier) {
-    document.getElementById("studentAnswerInput").value = val;
-    generateFeedbackAudit();
-  }
-
-  function generateFeedbackAudit() {
-    const ans = document.getElementById("studentAnswerInput").value.trim();
-    const resultBox = document.getElementById("feedbackAuditResult");
-    resultBox.classList.remove("hidden");
-
-    const raw = document.getElementById("rawAiFeedback");
-    const corrected = document.getElementById("correctedFeedback");
-    const notes = document.getElementById("teacherNotes");
-
-    if (ans.includes("4a^2 - 25") || ans.includes("4a² - 25")) {
-      raw.innerHTML = "Great job! The answer is correct. You used the difference of squares formula.";
-      corrected.innerHTML = "Excellent work! You applied the difference of squares formula $(a-b)(a+b)=a^2-b^2$ perfectly by squaring both the coefficient $2$ and the variable $a$. Keep it up!";
-      notes.innerText = "Retained positive feedback while adding explicit mathematical notation to reinforce correct methodology.";
-    } else if (ans.includes("2a^2 - 25") || ans.includes("2a² - 25")) {
-      raw.innerHTML = "Incorrect. You forgot to square the number 2. The correct answer is 4a^2 - 25.";
-      corrected.innerHTML = "You are very close and got the correct sign! Remember that when squaring $(2a)$, you must square both the number and variable: $(2a)^2 = 2^2 \\cdot a^2 = 4a^2$. Try solving $(3x - 4)(3x + 4)$ next!";
-      notes.innerText = "Changed harsh 'Incorrect' tone to encouraging feedback. Added guided step-by-step rule explanation and a practice follow-up question.";
-    } else {
-      raw.innerHTML = "Wrong answer. You multiplied terms like standard quadratic expanded form instead of using difference of squares formula.";
-      corrected.innerHTML = "Notice how the middle terms $-10a$ and $+10a$ cancel out! In $(a-b)(a+b)$, the middle terms sum to zero: $-10a + 10a = 0$. That is why only $a^2 - b^2$ remains. Let's practice cancelling middle terms together!";
-      notes.innerText = "Replaced blunt failure verdict with targeted diagnostic feedback explaining the algebraic cancellation of middle terms.";
-    }
-  }
-
-  // FALLBACK QUIZ DATA
+  // FALLBACK TRIGONOMETRY QUIZ DATA
   function loadFallbackQuiz() {
     currentQuestions = [
-      { question: "Factor expression: x² - 9", options: ["(x - 3)(x + 3)", "(x - 9)(x + 1)", "(x - 3)²", "(x + 3)²"], correct: 0, difficulty: "EASY", hint: "Use a² - b² = (a - b)(a + b)", solution: "9 is 3², so x² - 3² = (x - 3)(x + 3)" },
-      { question: "Calculate using difference of squares: 52² - 48²", options: ["100", "400", "800", "1600"], correct: 1, difficulty: "EASY", hint: "(52 - 48)(52 + 48)", solution: "4 * 100 = 400" },
-      { question: "Simplify: (2a - 5)(2a + 5)", options: ["4a² - 25", "2a² - 25", "4a² - 10a - 25", "4a² - 5"], correct: 0, difficulty: "MEDIUM", hint: "Square (2a) and 5", solution: "(2a)² - 5² = 4a² - 25" },
-      { question: "Solve equation: x² - 16 = 0", options: ["x = 4", "x = -4", "x = 4; x = -4", "No real roots"], correct: 2, difficulty: "MEDIUM", hint: "(x - 4)(x + 4) = 0", solution: "x = 4 or x = -4" },
-      { question: "Find missing component: (3x - ?)(3x + y) = 9x² - y²", options: ["3x", "y", "y²", "9x"], correct: 1, difficulty: "HARD", hint: "Second term squared gives y²", solution: "The missing term is y" }
+      { question: "What is the fundamental Pythagorean identity?", options: ["sin²(x) + cos²(x) = 1", "sin(x) + cos(x) = 1", "tan²(x) + 1 = sin²(x)", "cos²(x) - sin²(x) = 1"], correct: 0, difficulty: "EASY", hint: "Derived from a right triangle on the unit circle (x² + y² = 1)", solution: "sin²(x) + cos²(x) = 1 is the fundamental identity." },
+      { question: "Simplify the expression: sin(x) / cos(x)", options: ["tan(x)", "cot(x)", "sec(x)", "csc(x)"], correct: 0, difficulty: "EASY", hint: "Quotient identity for tangent", solution: "tan(x) = sin(x) / cos(x)" },
+      { question: "Simplify: 1 - cos²(x)", options: ["sin²(x)", "tan²(x)", "sec²(x)", "csc²(x)"], correct: 0, difficulty: "EASY", hint: "Rearrange sin²(x) + cos²(x) = 1", solution: "1 - cos²(x) = sin²(x)" },
+      { question: "Simplify: sin²(x) + cos²(x) + tan²(x)", options: ["sec²(x)", "csc²(x)", "1", "2"], correct: 0, difficulty: "MEDIUM", hint: "First replace sin²(x) + cos²(x) with 1, then use 1 + tan²(x)", solution: "1 + tan²(x) = sec²(x)" },
+      { question: "What is 1 / cos(x) equal to?", options: ["sec(x)", "csc(x)", "cot(x)", "tan(x)"], correct: 0, difficulty: "MEDIUM", hint: "Reciprocal identity for secant", solution: "sec(x) = 1 / cos(x)" },
+      { question: "Simplify: cos(x) · tan(x)", options: ["sin(x)", "cos(x)", "1", "sec(x)"], correct: 0, difficulty: "MEDIUM", hint: "Rewrite tan(x) as sin(x)/cos(x)", solution: "cos(x) · (sin(x)/cos(x)) = sin(x)" },
+      { question: "Simplify: (1 - sin(x))(1 + sin(x))", options: ["cos²(x)", "sin²(x)", "tan²(x)", "1"], correct: 0, difficulty: "MEDIUM", hint: "Difference of squares: 1 - sin²(x)", solution: "1 - sin²(x) = cos²(x)" },
+      { question: "Simplify: cot(x) · sin(x)", options: ["cos(x)", "sin(x)", "tan(x)", "csc(x)"], correct: 0, difficulty: "HARD", hint: "cot(x) = cos(x)/sin(x)", solution: "(cos(x)/sin(x)) · sin(x) = cos(x)" },
+      { question: "Simplify: sec²(x) - tan²(x)", options: ["1", "0", "2", "sin²(x)"], correct: 0, difficulty: "HARD", hint: "Rearrange identity 1 + tan²(x) = sec²(x)", solution: "sec²(x) - tan²(x) = 1" },
+      { question: "Express sin(2x) using double angle identity:", options: ["2sin(x)cos(x)", "sin²(x) - cos²(x)", "2sin(x)", "cos²(x) - sin²(x)"], correct: 0, difficulty: "HARD", hint: "Double angle formula for sine", solution: "sin(2x) = 2sin(x)cos(x)" }
     ];
     currentIndex = 0;
     score = 0;
