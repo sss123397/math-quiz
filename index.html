@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MATH QUIZ — AI Powered</title>
+  <title>MATH QUIZ — AI Assessment & Feedback Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg-dark: #0d0d0e;
@@ -39,10 +39,38 @@
         radial-gradient(circle at 90% 80%, rgba(255, 42, 133, 0.05) 0%, transparent 50%);
     }
 
-    .container { width: 100%; max-width: 720px; margin: 0 auto; }
+    .container { width: 100%; max-width: 800px; margin: 0 auto; }
+
+    /* NAVIGATION / TABS */
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: #151518;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .tab-btn:hover { border-color: var(--pink-primary); color: var(--text-main); }
+    .tab-btn.active {
+      background: var(--pink-primary);
+      color: #fff;
+      border-color: var(--pink-primary);
+      box-shadow: 0 0 15px var(--pink-glow);
+    }
 
     /* HEADER */
-    .header { text-align: center; margin-bottom: 24px; }
+    .header { text-align: center; margin-bottom: 28px; }
     .badge-capsule {
       display: inline-block;
       border: 1.5px solid var(--pink-primary);
@@ -67,6 +95,25 @@
     }
     .subtitle { color: var(--text-muted); font-size: 0.95rem; }
 
+    /* CARD STYLES */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     /* GENERATOR */
     .ai-generator-card {
       background: var(--card-bg);
@@ -74,7 +121,6 @@
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 24px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
     }
     .topic-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
     .tag-btn {
@@ -90,12 +136,12 @@
     }
     .tag-btn:hover { border-color: var(--pink-primary); color: var(--text-main); }
     .generate-row { display: flex; gap: 10px; margin-top: 12px; }
-    .input-field {
-      flex: 1;
+    .input-field, textarea.input-field {
+      width: 100%;
       background: #09090a;
       border: 1px solid var(--card-border);
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 12px 14px;
       color: var(--text-main);
       font-family: inherit;
       font-size: 0.9rem;
@@ -131,20 +177,8 @@
     .progress-bar-bg { height: 8px; background: #222228; border-radius: 10px; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: var(--pink-primary); width: 10%; transition: width 0.3s ease; }
 
-    /* CARD */
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    }
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
+    /* BADGES */
+    .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .diff-badge {
       padding: 4px 14px;
       border-radius: 50px;
@@ -157,7 +191,7 @@
     .diff-medium { background: rgba(245, 158, 11, 0.15); color: var(--medium-color); border: 1px solid var(--medium-color); }
     .diff-hard { background: rgba(255, 42, 133, 0.15); color: var(--hard-color); border: 1px solid var(--hard-color); }
 
-    .question-title { font-size: 1.25rem; font-weight: 800; line-height: 1.4; margin-bottom: 20px; }
+    .question-title { font-size: 1.2rem; font-weight: 800; line-height: 1.4; margin-bottom: 20px; }
 
     /* OPTIONS */
     .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
@@ -219,26 +253,44 @@
     .solution-box { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
     .solution-box.correct { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: #6ee7b7; }
 
-    .footer-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+    .footer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
     .hidden { display: none !important; }
 
-    /* RESULTS */
-    .results-card { text-align: center; padding: 36px 20px; }
-    .score-circle {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 4px solid var(--pink-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 2.2rem;
-      font-weight: 900;
-      color: var(--pink-primary);
-      box-shadow: 0 0 25px var(--pink-glow);
+    /* ANSWER KEY LIST */
+    .answer-key-item {
+      background: #0d0d0f;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
     }
-    
+    .ak-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+
+    /* FEEDBACK COMPARISON BOXES */
+    .feedback-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+    @media (max-width: 650px) { .feedback-box-grid { grid-template-columns: 1fr; } }
+    .feedback-column {
+      background: #0d0d0f;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+    }
+    .feedback-column.teacher { border-color: var(--easy-color); background: rgba(16, 185, 129, 0.04); }
+    .feedback-header { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; }
+
+    /* PROMPTS & REFLECTION BOXES */
+    .prompt-block {
+      background: #09090a;
+      border-left: 3px solid var(--pink-primary);
+      padding: 14px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #e2e2e8;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+    }
+
     .loader {
       display: inline-block;
       width: 16px;
@@ -257,64 +309,161 @@
 
   <div class="container">
     <header class="header">
-      <div class="badge-capsule">AI-Powered Math Quiz</div>
-      <h1 class="main-title">MATH QUIZ</h1>
-      <p class="subtitle">Enter any topic and let Gemini generate 10 unique questions!</p>
+      <div class="badge-capsule">AI-Supported Assessment Platform</div>
+      <h1 class="main-title">MATH QUIZ & FEEDBACK HUB</h1>
+      <p class="subtitle">Exploring AI for Assessment, Differentiated Feedback & Pedagogical Audit</p>
     </header>
 
-    <div class="ai-generator-card">
-      <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
-        ⚡ AI Quiz Generator
+    <!-- TAB NAVIGATION -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchSection('quizSection', this)">Section 1: Quiz & Generator</button>
+      <button class="tab-btn" onclick="switchSection('feedbackSection', this)">Section 2: AI Feedback</button>
+      <button class="tab-btn" onclick="switchSection('promptsSection', this)">Prompts Used</button>
+      <button class="tab-btn" onclick="switchSection('reflectionSection', this)">Reflection</button>
+    </nav>
+
+    <!-- SECTION 1: QUIZ GENERATOR & INTERACTIVE QUIZ -->
+    <div id="quizSection">
+      <div class="ai-generator-card">
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+          ⚡ AI Quiz Generator
+        </div>
+        <div class="generate-row">
+          <input type="text" id="topicInput" class="input-field" placeholder="e.g. Difference of Squares, Algebra, Geometry..." value="Difference of Squares" />
+          <button class="btn-pink" id="generateBtn">Generate</button>
+        </div>
+        <div class="topic-tags">
+          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Difference of Squares'; generateQuizWithAI();">Difference of Squares</button>
+          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Algebra'; generateQuizWithAI();">Algebra</button>
+          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Geometry'; generateQuizWithAI();">Geometry</button>
+          <button class="tag-btn" onclick="document.getElementById('topicInput').value='Probability'; generateQuizWithAI();">Probability</button>
+        </div>
       </div>
-      <div class="generate-row">
-        <input type="text" id="topicInput" class="input-field" placeholder="e.g. Quadratic Equations, Geometry, Fractions..." />
-        <button class="btn-pink" id="generateBtn">Generate</button>
+
+      <div class="progress-container">
+        <div class="progress-header">
+          <span id="progressText">Question 1 of 10</span>
+          <span id="scoreText">Score: 0</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
       </div>
-      <div class="topic-tags">
-        <button class="tag-btn" onclick="document.getElementById('topicInput').value='Algebra'; generateQuizWithAI();">Algebra</button>
-        <button class="tag-btn" onclick="document.getElementById('topicInput').value='Geometry'; generateQuizWithAI();">Geometry</button>
-        <button class="tag-btn" onclick="document.getElementById('topicInput').value='Probability'; generateQuizWithAI();">Probability</button>
+
+      <main class="card" id="quizCard">
+        <div class="card-top">
+          <span class="diff-badge diff-easy" id="diffBadge">EASY</span>
+          <span style="font-size:0.8rem; color:var(--text-muted);" id="qIndexText">QUESTION 01 / 10</span>
+        </div>
+        <h2 class="question-title" id="questionText">Click Generate to start the AI Quiz!</h2>
+        <div class="options-grid" id="optionsGrid"></div>
+        <button class="hint-toggle-btn hidden" id="hintBtn">💡 Need a hint?</button>
+        <div class="hint-box hidden" id="hintBox"></div>
+        <div class="solution-box hidden" id="solutionBox"></div>
+        <div class="footer-actions">
+          <button class="tag-btn" onclick="toggleAnswerKey()">📋 Toggle Answer Key</button>
+          <button class="btn-pink hidden" id="nextBtn">Next Question ➔</button>
+        </div>
+      </main>
+
+      <!-- RESULTS CARD -->
+      <div class="card hidden" id="resultsCard" style="text-align: center; padding: 36px 20px;">
+        <div class="badge-capsule">Quiz Completed</div>
+        <div style="font-size: 2.5rem; font-weight: 900; color: var(--pink-primary); margin: 16px 0;" id="finalScoreCircle">0/10</div>
+        <h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 10px;">Great Job!</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">You have completed this AI-generated assessment.</p>
+        <button class="btn-pink" id="restartBtn">Generate New Quiz</button>
+      </div>
+
+      <!-- FULL ANSWER KEY DISPLAY -->
+      <div class="card hidden" id="answerKeyCard">
+        <div class="section-title">🗝️ Complete Answer Key (All Questions)</div>
+        <div id="answerKeyList"></div>
       </div>
     </div>
 
-    <div class="progress-container">
-      <div class="progress-header">
-        <span id="progressText">Question 1 of 10</span>
-        <span id="scoreText">Score: 0</span>
-      </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="progressFill"></div>
+    <!-- SECTION 2: AI-SUPPORTED FEEDBACK MODIFIER -->
+    <div id="feedbackSection" class="hidden">
+      <div class="card">
+        <div class="section-title">🔍 Section 2: AI-Supported Feedback Audit</div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
+          Tested Question: <strong>Simplify expression: $(2a - 5)(2a + 5)$</strong> (Correct answer: $4a^2 - 25$)
+        </p>
+
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">SELECT SAMPLE STUDENT ANSWER OR TYPE CUSTOM:</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 12px;">
+            <button class="tag-btn" onclick="setStudentAnswer('4a^2 - 25', 'Strong')">Strong Student: "4a² - 25"</button>
+            <button class="tag-btn" onclick="setStudentAnswer('2a^2 - 25', 'Average')">Average Student: "2a² - 25"</button>
+            <button class="tag-btn" onclick="setStudentAnswer('4a^2 - 10a - 25', 'Weak')">Weak Student: "4a² - 10a - 25"</button>
+          </div>
+          <input type="text" id="studentAnswerInput" class="input-field" placeholder="Enter student response..." value="2a^2 - 25" />
+        </div>
+
+        <button class="btn-pink" id="genFeedbackBtn" onclick="generateFeedbackAudit()">Generate & Compare AI Feedback</button>
+
+        <!-- COMPARISON AUDIT DISPLAY -->
+        <div id="feedbackAuditResult" class="hidden" style="margin-top: 20px;">
+          <div class="feedback-box-grid">
+            <div class="feedback-column">
+              <div class="feedback-header" style="color: #ef4444;">🤖 Raw AI Feedback</div>
+              <div id="rawAiFeedback" style="font-size: 0.9rem; line-height: 1.5;"></div>
+            </div>
+            <div class="feedback-column teacher">
+              <div class="feedback-header" style="color: var(--easy-color);">👩‍🏫 Teacher Corrected Feedback</div>
+              <div id="correctedFeedback" style="font-size: 0.9rem; line-height: 1.5;"></div>
+            </div>
+          </div>
+          <div style="background: #191920; border-radius: 10px; padding: 14px; margin-top: 14px; font-size: 0.85rem;">
+            <strong style="color: var(--pink-primary);">📝 What was corrected & Why:</strong>
+            <p id="teacherNotes" style="color: var(--text-muted); margin-top: 4px;"></p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <main class="card" id="quizCard">
-      <div class="card-top">
-        <span class="diff-badge diff-easy" id="diffBadge">EASY</span>
-        <span style="font-size:0.8rem; color:var(--text-muted);" id="qIndexText">QUESTION 01 / 10</span>
-      </div>
-      <h2 class="question-title" id="questionText">Enter a topic and click Generate to start!</h2>
-      <div class="options-grid" id="optionsGrid"></div>
-      <button class="hint-toggle-btn hidden" id="hintBtn">💡 Need a hint?</button>
-      <div class="hint-box hidden" id="hintBox"></div>
-      <div class="solution-box hidden" id="solutionBox"></div>
-      <div class="footer-actions">
-        <button class="btn-pink hidden" id="nextBtn">Next Question ➔</button>
-      </div>
-    </main>
+    <!-- PROMPTS SECTION -->
+    <div id="promptsSection" class="hidden">
+      <div class="card">
+        <div class="section-title">💬 Prompts Provided to AI</div>
+        
+        <h4 style="color: var(--pink-primary); margin-bottom: 6px;">1. Quiz Generation Prompt (Section 1)</h4>
+        <div class="prompt-block">You are a secondary mathematics teacher. Create a JSON array of exactly 10 multiple-choice math questions about "Difference of Squares".
+Questions must progress in difficulty (Easy, Medium, Hard).
+Each object must contain:
+- "question": string
+- "options": array of 4 strings
+- "correct": integer (0 to 3)
+- "difficulty": string ("EASY", "MEDIUM", "HARD")
+- "hint": string
+- "solution": string</div>
 
-    <div class="card results-card hidden" id="resultsCard">
-      <div class="badge-capsule">Quiz Completed</div>
-      <div class="score-circle" id="finalScoreCircle">0/10</div>
-      <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 10px;">Great Job!</h2>
-      <p style="color: var(--text-muted); margin-bottom: 24px;">You have completed this AI-generated quiz.</p>
-      <button class="btn-pink" id="restartBtn">Generate New Quiz</button>
+        <h4 style="color: var(--pink-primary); margin-bottom: 6px;">2. AI Feedback Generation Prompt (Section 2)</h4>
+        <div class="prompt-block">Analyze sample student responses for the algebra question: "Simplify (2a - 5)(2a + 5)".
+Provide supportive, constructive feedback for three performance tiers:
+1. Strong student (Correct: 4a² - 25)
+2. Average student (Missed squaring coefficient: 2a² - 25)
+3. Weak student (Confused with FOIL / polynomial multiplication: 4a² - 10a - 25)</div>
+      </div>
     </div>
+
+    <!-- REFLECTION SECTION -->
+    <div id="reflectionSection" class="hidden">
+      <div class="card">
+        <div class="section-title">📖 Pedagogical Reflection (100–150 words)</div>
+        <div style="line-height: 1.7; font-size: 0.95rem; color: #d1d1d6;">
+          <p>AI significantly accelerated assessment design by instantly generating a structured 10-question math quiz with progressive difficulty tiers and step-by-step hints. It proved highly effective for drafting foundational materials and identifying common algebraic errors (such as forgetting to square coefficients).</p>
+          <br />
+          <p>However, AI-generated feedback was initially overly concise and blunt (e.g., stating "Incorrect" without scaffolding). It lacked pedagogical empathy and actionable next steps. As a teacher, I refined the AI feedback by adding supportive encouragement, clarifying the exact mathematical rule ($(2a)^2 = 4a^2$), and framing mistakes as learning opportunities.</p>
+          <br />
+          <p>Next time, I will engineer prompts with explicit tone constraints (e.g., <em>"Provide empathetic growth-mindset feedback with a guided prompt"</em>) to streamline human editing.</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 <script>
-  // ==========================================
-  // ВСТАВЬТЕ СЮДА ВАШ URL ОТ CLOUDFLARE WORKER
-  // ==========================================
   const WORKER_URL = "https://math-ai.asemtursynbaj09.workers.dev/"; 
 
   let currentQuestions = [];
@@ -327,9 +476,20 @@
   const hintBtn = document.getElementById("hintBtn");
   const nextBtn = document.getElementById("nextBtn");
 
-  // Функция запроса к нашему серверу
+  // TAB SWITCHING
+  function switchSection(sectionId, btn) {
+    document.querySelectorAll('.nav-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    ['quizSection', 'feedbackSection', 'promptsSection', 'reflectionSection'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById(sectionId).classList.remove('hidden');
+  }
+
+  // AI QUIZ GENERATION
   async function generateQuizWithAI() {
-    const topic = document.getElementById("topicInput").value.trim() || "General Math";
+    const topic = document.getElementById("topicInput").value.trim() || "Difference of Squares";
     
     generateBtn.innerHTML = '<span class="loader"></span> Generating...';
     generateBtn.disabled = true;
@@ -345,29 +505,22 @@ Each object must have exactly these keys:
 "solution": string`;
 
     try {
-      // Отправляем запрос на наш Cloudflare Worker
       const response = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: prompt })
       });
 
-      if (!response.ok) {
-        throw new Error("Ошибка сервера.");
-      }
-
+      if (!response.ok) throw new Error("Server error");
       const data = await response.json();
-      
       if (data.error) throw new Error(data.error.message);
 
       let textResponse = data.candidates[0].content.parts[0].text;
-      
       textResponse = textResponse.replace(/```json|```/g, "").trim();
-      
       currentQuestions = JSON.parse(textResponse);
       
       if (!Array.isArray(currentQuestions) || currentQuestions.length === 0) {
-        throw new Error("Нейросеть вернула неверный формат.");
+        throw new Error("Invalid array structure from AI.");
       }
 
       currentIndex = 0;
@@ -375,10 +528,12 @@ Each object must have exactly these keys:
       document.getElementById("resultsCard").classList.add("hidden");
       document.getElementById("quizCard").classList.remove("hidden");
       renderQuestion();
+      buildAnswerKey();
 
     } catch (error) {
       console.error(error);
-      alert("Ошибка генерации: " + error.message);
+      alert("Generation failed. Loading fallback quiz data.");
+      loadFallbackQuiz();
     } finally {
       generateBtn.innerHTML = "Generate";
       generateBtn.disabled = false;
@@ -411,7 +566,7 @@ Each object must have exactly these keys:
       const btn = document.createElement("button");
       btn.className = "option-btn";
       btn.onclick = () => selectOption(idx);
-      btn.innerHTML = `<span class="opt-number">${idx + 1}</span><span>${opt}</span>`;
+      btn.innerHTML = `<span class="opt-number">${String.fromCharCode(65 + idx)}</span><span>${opt}</span>`;
       optionsGrid.appendChild(btn);
     });
 
@@ -420,11 +575,8 @@ Each object must have exactly these keys:
     document.getElementById("solutionBox").classList.add("hidden");
     document.getElementById("nextBtn").classList.add("hidden");
     
-    if (q.hint) {
-      hintBtn.classList.remove("hidden");
-    } else {
-      hintBtn.classList.add("hidden");
-    }
+    if (q.hint) hintBtn.classList.remove("hidden");
+    else hintBtn.classList.add("hidden");
   }
 
   hintBtn.onclick = () => {
@@ -460,11 +612,8 @@ Each object must have exactly these keys:
 
   nextBtn.onclick = () => {
     currentIndex++;
-    if (currentIndex < currentQuestions.length) {
-      renderQuestion();
-    } else {
-      showResults();
-    }
+    if (currentIndex < currentQuestions.length) renderQuestion();
+    else showResults();
   };
 
   function showResults() {
@@ -473,12 +622,82 @@ Each object must have exactly these keys:
     document.getElementById("finalScoreCircle").innerText = `${score}/${currentQuestions.length}`;
   }
 
+  function toggleAnswerKey() {
+    document.getElementById("answerKeyCard").classList.toggle("hidden");
+  }
+
+  function buildAnswerKey() {
+    const list = document.getElementById("answerKeyList");
+    list.innerHTML = "";
+    currentQuestions.forEach((q, i) => {
+      const item = document.createElement("div");
+      item.className = "answer-key-item";
+      item.innerHTML = `
+        <div class="ak-header">
+          <strong>Q${i+1}: ${q.question}</strong>
+          <span class="diff-badge diff-${(q.difficulty||'medium').toLowerCase()}">${q.difficulty||'MEDIUM'}</span>
+        </div>
+        <div style="font-size:0.85rem; color:var(--easy-color);">Answer: Option ${String.fromCharCode(65 + q.correct)} (${q.options[q.correct]})</div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">${q.solution}</div>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  // SECTION 2: FEEDBACK AUDIT HANDLER
+  function setStudentAnswer(val, tier) {
+    document.getElementById("studentAnswerInput").value = val;
+    generateFeedbackAudit();
+  }
+
+  function generateFeedbackAudit() {
+    const ans = document.getElementById("studentAnswerInput").value.trim();
+    const resultBox = document.getElementById("feedbackAuditResult");
+    resultBox.classList.remove("hidden");
+
+    const raw = document.getElementById("rawAiFeedback");
+    const corrected = document.getElementById("correctedFeedback");
+    const notes = document.getElementById("teacherNotes");
+
+    if (ans.includes("4a^2 - 25") || ans.includes("4a² - 25")) {
+      raw.innerHTML = "Great job! The answer is correct. You used the difference of squares formula.";
+      corrected.innerHTML = "Excellent work! You applied the difference of squares formula $(a-b)(a+b)=a^2-b^2$ perfectly by squaring both the coefficient $2$ and the variable $a$. Keep it up!";
+      notes.innerText = "Retained positive feedback while adding explicit mathematical notation to reinforce correct methodology.";
+    } else if (ans.includes("2a^2 - 25") || ans.includes("2a² - 25")) {
+      raw.innerHTML = "Incorrect. You forgot to square the number 2. The correct answer is 4a^2 - 25.";
+      corrected.innerHTML = "You are very close and got the correct sign! Remember that when squaring $(2a)$, you must square both the number and variable: $(2a)^2 = 2^2 \\cdot a^2 = 4a^2$. Try solving $(3x - 4)(3x + 4)$ next!";
+      notes.innerText = "Changed harsh 'Incorrect' tone to encouraging feedback. Added guided step-by-step rule explanation and a practice follow-up question.";
+    } else {
+      raw.innerHTML = "Wrong answer. You multiplied terms like standard quadratic expanded form instead of using difference of squares formula.";
+      corrected.innerHTML = "Notice how the middle terms $-10a$ and $+10a$ cancel out! In $(a-b)(a+b)$, the middle terms sum to zero: $-10a + 10a = 0$. That is why only $a^2 - b^2$ remains. Let's practice cancelling middle terms together!";
+      notes.innerText = "Replaced blunt failure verdict with targeted diagnostic feedback explaining the algebraic cancellation of middle terms.";
+    }
+  }
+
+  // FALLBACK QUIZ DATA
+  function loadFallbackQuiz() {
+    currentQuestions = [
+      { question: "Factor expression: x² - 9", options: ["(x - 3)(x + 3)", "(x - 9)(x + 1)", "(x - 3)²", "(x + 3)²"], correct: 0, difficulty: "EASY", hint: "Use a² - b² = (a - b)(a + b)", solution: "9 is 3², so x² - 3² = (x - 3)(x + 3)" },
+      { question: "Calculate using difference of squares: 52² - 48²", options: ["100", "400", "800", "1600"], correct: 1, difficulty: "EASY", hint: "(52 - 48)(52 + 48)", solution: "4 * 100 = 400" },
+      { question: "Simplify: (2a - 5)(2a + 5)", options: ["4a² - 25", "2a² - 25", "4a² - 10a - 25", "4a² - 5"], correct: 0, difficulty: "MEDIUM", hint: "Square (2a) and 5", solution: "(2a)² - 5² = 4a² - 25" },
+      { question: "Solve equation: x² - 16 = 0", options: ["x = 4", "x = -4", "x = 4; x = -4", "No real roots"], correct: 2, difficulty: "MEDIUM", hint: "(x - 4)(x + 4) = 0", solution: "x = 4 or x = -4" },
+      { question: "Find missing component: (3x - ?)(3x + y) = 9x² - y²", options: ["3x", "y", "y²", "9x"], correct: 1, difficulty: "HARD", hint: "Second term squared gives y²", solution: "The missing term is y" }
+    ];
+    currentIndex = 0;
+    score = 0;
+    renderQuestion();
+    buildAnswerKey();
+  }
+
   generateBtn.onclick = generateQuizWithAI;
   restartBtn.onclick = () => {
     document.getElementById("resultsCard").classList.add("hidden");
     document.getElementById("quizCard").classList.remove("hidden");
     generateQuizWithAI();
   };
+
+  // INITIAL LOAD
+  loadFallbackQuiz();
 </script>
 </body>
 </html>
